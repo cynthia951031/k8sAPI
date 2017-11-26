@@ -29,7 +29,7 @@ def param_to_model(instance_name, instance_id, cpu, mem, gpu, scale, isSSD):
 	return instance
 
 def instance_to_json(ins):
-	return json.dumps(dict(instance_name = ins.name),
+	return json.dumps(dict(instance_name = ins.name,
 						   instance_id = ins.id,
 						   cpu = ins.CPUsize,
 						   gpu = ins.GPUnum,

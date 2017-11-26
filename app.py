@@ -15,8 +15,6 @@ NAMESPACE = 'default'
 
 extensions_v1beta1 = client.ExtensionsV1beta1Api()
 
-
-
 @app.route(BASE_URL + 'instance', methods=['POST'])
 def create_instance():
 	if not request.json or not 'instance_name' in request.json:
@@ -90,7 +88,7 @@ def query_instance():
 
 	api_response = extensions_v1beta1.read_namespaced_deployment(name=ins.name, namespace=NAMESPACE)
 	# transform api_response
-	return
+	return api_response
 
 @app.route(BASE_URL + 'instance/<int::iid>', methods=['GET'])
 def get_instance_detail(iid):
@@ -98,7 +96,7 @@ def get_instance_detail(iid):
 
 	api_response = extensions_v1beta1.read_namespaced_deployment(name=ins.name, namespace=NAMESPACE)
 	#transform api_response
-	return
+	return api_response
 
 @app.errorhandler(404)
 def not_found(error):
