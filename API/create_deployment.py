@@ -5,17 +5,16 @@ import yml
 from kubernetes import client, config
 import json
 
-######################################
 
 DEPLOYMENT_NAME = "nginx-deployment"
 
 
-def create_deployment_object(scale, cpu, gpu, instancename, mem, isSSD):
+def create_deployment_object(scale, cpu, gpu, instance_name, mem, isSSD):
     # Configureate Pod template container
     container = client.V1Container(
-        name=instancename,
+        name=instance_name,
         image="nginx:1.7.9",
-        resource=clinet.V1ResourceRequirements(requests={'cpu': str(cpu), 'memory':str(mem) + 'Mi'}),
+        resource=client.V1ResourceRequirements(requests={'cpu': str(cpu), 'memory': str(mem) + 'Mi'}),
         ports=[client.V1ContainerPort(container_port=80)])
     if isSSD:
         volume_medium = 'SSD'

@@ -5,12 +5,12 @@ import yml
 from kubernetes import client, config
 import json
 
-def update_deployment(api_instance, deployment):
+def update_deployment(api_instance, deployment, deployment_name):
     # Update container image
-    deployment.spec.template.spec.containers[0].image = "nginx:1.9.1"
+    #deployment.spec.replicas = new_scale
     # Update the deployment
     api_response = api_instance.patch_namespaced_deployment(
-        name=DEPLOYMENT_NAME,
+        name=deployment_name,
         namespace="default",
         body=deployment)
     print("Deployment updated. status='%s'" % str(api_response.status))
