@@ -1,16 +1,19 @@
 #!/usr/bin/env python
 # _*_ coding:utf-8 _*_
 
-import yml
-from kubernetes import client, config
-import json
+from kubernetes import client
+from . import configuration, api_instance
+from kubernetes.client.rest import ApiException
 
-def delete_deployment(api_instance, deployment_name):
+def delete_deployment(deployment_name, namespace_name):
     # Delete deployment
-    api_response = api_instance.delete_namespaced_deployment(
-        name=deployment_name,
-        namespace="default",
-        body=client.V1DeleteOptions(
-            propagation_policy='Foreground',
-            grace_period_seconds=5))
-    print("Deployment deleted. status='%s'" % str(api_response.status))
+    body = client.V1DeleteOptions(api_version="extensions/v1beta1", 
+    							kind = 'Deployment')
+    try:
+	    api_response = api_instance.delete_namespaced_deployment(
+	        name=deployment_name,
+	        namespace=namespace_name,
+	        body=body)
+    except ApiException as e:
+        print("Exception when calling Extension/v1beta->delete_namespaced_deployment: %s \n" % e)
+    return api_response

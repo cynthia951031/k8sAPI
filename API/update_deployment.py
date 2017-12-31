@@ -1,16 +1,27 @@
 #!/usr/bin/env python
 # _*_ coding:utf-8 _*_
 
-import yml
-from kubernetes import client, config
-import json
+from kubernetes import client
+from . import configuration, api_instance
+from kubernetes.client.rest import ApiException
 
-def update_deployment(api_instance, deployment, deployment_name):
-    # Update container image
-    #deployment.spec.replicas = new_scale
-    # Update the deployment
-    api_response = api_instance.patch_namespaced_deployment(
-        name=deployment_name,
-        namespace="default",
-        body=deployment)
-    print("Deployment updated. status='%s'" % str(api_response.status))
+def create_scale_object(new_scale):
+	spec = client.ExtensionsV1beta1ScaleSpec(replicas=new_scale)
+	scale_object = client.ExtensionsV1beta1Scale(
+					api_version = "extensions/v1beta1",
+					spec = spec)
+
+	return scale_object
+
+def update_deployment_scale(scale_object, namespace, deployment_name):
+    name = 'new_scale'
+    pretty = 'True'
+    try:
+	    api_response = api_instance.replace_namespaced_deployment_scale(
+	        name=name,
+	        namespace=namespace,
+	        body=scale_object,
+	        pretty = pretty)
+    except ApiException as e:
+        print("Exception when calling Extension/v1beta->replace_namespaced_deployment_scale: %s \n" % e)
+    return api_response

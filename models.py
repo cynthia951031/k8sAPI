@@ -1,32 +1,44 @@
 from datetime import datetime
 from . import db
+from time import time
+import jwt
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from flask import current_app
 
-class Instance(db.model):
-	__tabelname__ = 'instance'
-	id = db.Column(db.Integer, primary_key=True, nullable=False)
+
+class K8SUser(db.Model):
+	__tabelname__ = 'k8suser'
 	name = db.Column(db.String(128), nullable=False)
-	CPUsize = db.Column(db.Integer, nullable=False)
-	MEMsize = db.Column(db.Float, nullable=False)
-	GPUnum = db.Column(db.Integer, nullable=False)
-	scale = db.Column(db.Integer, nullable=False) # the scale of pods
-	isSSD = db.Column(db.Boolean, default=True, nullable=False)
-	postStamp = db.Column(db.DataTime)
-	serviceIP = db.Column(db.Text)
-	servicePort = db.Column(db.Integer)
-	updateStamp = db.Column(db.DataTime)
-	deleteStamp = db.Column(db.DataTime)
+	id = db.Column(db.Integer, primary_key=True)
+	namespace = db.Column(db.String(128))
 
+	def __init__(self, **kwargs):
+		super(User, self).__init__(**kwargs)
+		if self.avatar_hash is None and self.name is not None:
+			self.avatar_hash = hashlib.md5(self.name.encode('utf-8')).hexdigest()
+		return
 
-def param_to_model(instance_name, instance_id, cpu, mem, gpu, scale, isSSD):
-	instance = Instance()
-	instance.id = instance_id
-	instance.name = instance_name
-	instance.CPUsize = cpu
-	instance.GPUnum = gpu
-	instance.MEMsize = mem
-	instance.scale = scale
-	#rest attribute can be optional fill
-	return instance
+	def get_token(self, expiration = 300):
+		s = Serializer(current_app.config['SECRET_KEY'], expiration)
+		return s.dumps({'name':self.name, 'id':self.id}).decode('utf-8')
+	
+	@staticmethod
+	def validate_token(token):
+		s = Serializer(current_app.config['SECRET_KEY'])
+		try:
+			data = s.loads(token)
+		except:
+			return None
+		id = data.get('id')
+		name = data.get('name')
+		if id:
+			return K8SUser.query.get(id)
+		return None
+
+class Instance(db.Model):
+	__tabelname__ = 'instance'
+	name = db.Column(db.String(128), nullable = False)
+	id = db.Column(db.Integer, primary_key = True)
 
 def instance_to_json(ins):
 	return json.dumps(dict(instance_name = ins.name,
@@ -34,4 +46,5 @@ def instance_to_json(ins):
 						   cpu = ins.CPUsize,
 						   gpu = ins.GPUnum,
 						   scale = ins.scale,
-						   isSSD = ins.isSSD)
+						   isSSD = ins.isSSD))
+
