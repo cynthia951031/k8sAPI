@@ -9,7 +9,7 @@ import datetime
 
 
 
-from ..API import create_namespaced_instance as create
+from ..API import create_instance as create
 @instance.route('/', methods=['POST'])
 def create_instance():
 	token = request.cookies
