@@ -1,5 +1,6 @@
 import os
-from . import create_app
+from restful_api import create_app
+
 
 app = create_app('default')
 
