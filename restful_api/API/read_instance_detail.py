@@ -19,21 +19,20 @@ def read_service_detail(namespace_name, instance_name):
 		("Exception when calling CoreV1Api->read_namespaced_service: %s\n" % e)
 	return api_response
 
-'''
-param		type
-'''
-'''
-scale		int
-cpu		  int
-mem		  int
-isSSD		  bool
-creation_time  datatime
-deletion_time  datatime
-uid			str
-'''
-'''
-return dict
-'''
+#==========================
+#param		     type
+#===========================
+#scale		     int
+#cpu		     int
+#mem		     int
+#isSSD		     bool
+#creation_time   datatime
+#deletion_time   datatime
+#uid			 str
+
+#=========================
+#return dict
+#=========================
 def parse_rc(api_response):
 	rc_spec = api_response.spec
 	pod_spec = rc_spec.template.spec
@@ -53,14 +52,15 @@ def parse_rc(api_response):
 	return dict(scale = scale, cpu = cpu, mem = mem, isSSD = isSSD, \
 		creation_time = creation_time, deletion_time = deletion_time, uid = uid)
 
-'''
-param		type
-'''
-'''
-ip           str
-ports		 list(int)
-'''
+#==========================
+#param		     type
+#===========================
+#ip              str
+#ports		    list(int)
 
+#=========================
+#return dict
+#=========================
 def parse_service(api_response):
 	ip = api_response.spec.cluster_ip
 	ports = api_response.spec.ports

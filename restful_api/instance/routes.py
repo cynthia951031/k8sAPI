@@ -7,8 +7,6 @@ from .. import db
 from . import instance
 import datetime
 
-
-
 from ..API import create_instance as create
 @instance.route('/', methods=['POST'])
 def create_instance():
@@ -29,7 +27,7 @@ def create_instance():
 	isSSD = param['isSSD']
 	id = data['aid']
 	'''
-	one replication controller corresponse to one service
+	一个 rc 对应一个 service
 	'''
 	rc_object = create.create_rc_object(scale = scale, cpu = cpu, gpu = gpu, instance_name = instance_name, mem = mem, isSSD = isSSD)
 	rc_response = create.create_rc(namespace_name = namespace, rc_object = rc_object)
@@ -46,7 +44,6 @@ def create_instance():
 
 '''
 return status == 'Success' or 'Failure'
-complete!
 '''
 from ..API import delete_instance as delete
 @instance.route('/<int:iid>', methods=['DELETE'])
@@ -73,7 +70,6 @@ def delete_instance(iid):
 
 '''
 return status == 'Success' or 'Failure'
-complete!
 '''
 from ..API import update_instance as update
 @instance.route('/<int:iid>', methods=['PUT'])
@@ -106,7 +102,6 @@ def update_instance(iid):
 '''
 return json
 see more about the data format in API/read_instande_detail.py
-complete!
 '''
 from ..API import read_instance_detail as read
 @instance.route('/<int:iid>', methods=['GET'])
